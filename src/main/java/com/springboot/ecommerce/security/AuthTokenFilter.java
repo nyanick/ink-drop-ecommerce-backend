@@ -1,0 +1,89 @@
+package com.springboot.ecommerce.security;
+
+import com.springboot.ecommerce.service.JwtUserDetailsService;
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
+@Component
+public class AuthTokenFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private JwtTokenUtil jwtUtils;
+
+    @Autowired
+    private JwtUserDetailsService userDetailsService;
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String username = null;
+        String jwt = "";
+        try {
+            jwt = parseJwt(request);
+            jwt = jwt.replace("/", "_").replace("+", "-");
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                username = jwtUtils.getUsernameFromToken(jwt);
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                        userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            logger.error("Cannot set user authentication: {}", e.getMessage());
+        }
+        
+        //i would validate the token a second time again with another method
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+                // if token is valid configure Spring Security to manually set authentication
+                if (jwtUtils.validateToken(jwt, userDetails)) {
+
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                                        userDetails, null, userDetails.getAuthorities());
+                        usernamePasswordAuthenticationToken
+                                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        // After setting the Authentication in the context, we specify
+                        // that the current user is authenticated. So it passes the Spring Security Configurations successfully.
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
+                        //storing the user in the token in an 
+                        new TraceService(userDetails.getUsername());
+                }
+        }
+
+        filterChain.doFilter(request, response);
+    }
+
+    private String parseJwt(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
+
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            return headerAuth.substring(7, headerAuth.length());
+        }
+
+        return null;
+    }
+}

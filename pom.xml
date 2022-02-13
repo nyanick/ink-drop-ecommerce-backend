@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.springBoot</groupId>
-    <artifactId>ecommerce</artifactId>
+    <artifactId>inkdrop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>ecommerce</name>
-    <description>Demo project for eCommerce Spring Boot</description>
+    <name>inkdrop</name>
+    <description>Ink drop eCommerce Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.40</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -82,7 +82,6 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-rest-webmvc</artifactId>
-            <version>3.2.5.RELEASE</version>
         </dependency>
 
         <dependency>
@@ -98,7 +97,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>5.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.2</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
