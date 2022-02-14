@@ -51,7 +51,8 @@ public class HibernateConfiguration {
     @Value("${hibernate.connection.useUnicode}")
     private String HIBERNATE_CONNECTION_USE_UNICODE;
 
-    @Bean
+   // @Bean
+    @Bean(name="entityManagerFactory")
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
@@ -84,4 +85,6 @@ public class HibernateConfiguration {
         txManager.setSessionFactory(sessionFactory().getObject());
         return txManager;
     }
+    
+    
 }

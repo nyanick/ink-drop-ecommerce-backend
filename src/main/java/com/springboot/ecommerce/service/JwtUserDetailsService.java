@@ -15,6 +15,7 @@ import java.util.Date;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 	@Autowired
@@ -33,7 +34,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         
         @Override
 	public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-		User user = userRepository.findByUsername(name).get();
+		User user = userRepository.findByUsername(name);
 		if (user == null) {
 			throw new UsernameNotFoundException("Client not found with username: " + name);
 		}
@@ -43,10 +44,13 @@ public class JwtUserDetailsService implements UserDetailsService {
         
         
         public UserDetails loadUserByUsernameAndPassword(String username, String password) throws BadCredentialsException {
-          User user = userRepository.findByUsernameAndPassword(username, password, Boolean.TRUE)
-              .orElseThrow(() -> new BadCredentialsException("Incorrect credentials or user deactivated: " + username));
-
-          return UserDetailsImpl.build(user);
+          User user = userRepository.findByUsernameAndPassword(username, password, Boolean.TRUE);
+          if(user==null){
+              new BadCredentialsException("Incorrect credentials or user deactivated: " + username);
+          }
+          return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+				new ArrayList<>());
+          //return UserDetailsImpl.build(user);
         }
 
 	

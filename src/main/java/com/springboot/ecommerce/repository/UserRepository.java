@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     
-    Optional<User> findByUsername(String username);
+    User findByUsername(String username);
 
     Boolean existsByUsername(String username);
 
@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     
     @Query(value = "SELECT * FROM users e WHERE e.username = ?1 and e.password = ?2 and e.enabled = ?3",nativeQuery=true)
-    Optional<User> findByUsernameAndPassword(String username, String password, Boolean enabled);
+    User findByUsernameAndPassword(String username, String password, Boolean enabled);
     
 
 }

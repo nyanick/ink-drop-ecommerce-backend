@@ -26,7 +26,8 @@ import javax.persistence.UniqueConstraint;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(name = "username",unique=true)
@@ -53,10 +54,7 @@ public class User {
     @Column(name = "tel", nullable = false)
     private String tel;
     
-    @Column(name = "dob", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Africa/Douala")
-    @Temporal(TemporalType.DATE)
-    private Date dob;
+    private String dob;
     
     @Column(name = "email", nullable = false)
     private String email;
@@ -71,19 +69,14 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date modifiedDate;
     
-    @Column(name = "f1", nullable = false)
     private String f1;
     
-    @Column(name = "f2", nullable = false)
     private String f2;
     
-    @Column(name = "f3", nullable = false)
     private String f3;
     
-    @Column(name = "f4", nullable = false)
     private String f4;
     
-    @Column(name = "f5", nullable = false)
     private String f5;
 
     
@@ -187,11 +180,11 @@ public class User {
         this.tel = tel;
     }
 
-    public Date getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 

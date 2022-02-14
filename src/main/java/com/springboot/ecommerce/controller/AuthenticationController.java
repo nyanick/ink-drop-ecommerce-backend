@@ -17,7 +17,7 @@ import com.springboot.ecommerce.payload.response.JwtResponse;
 import com.springboot.ecommerce.payload.response.MessageResponse;
 import com.springboot.ecommerce.repository.RoleRepository;
 import com.springboot.ecommerce.repository.UserRepository;
-import com.springboot.ecommerce.service.UserDetailsImpl;
+//import com.springboot.ecommerce.service.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -51,6 +52,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     @Autowired
+    @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -71,32 +73,49 @@ public class AuthenticationController {
     @Autowired
     PasswordEncoder encoder;
 
-    
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+            authenticate(loginRequest.getUsername(), loginRequest.getPassword());
 
-//        Authentication authentication = authenticationManager
-//                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        
-        final UserDetails userDetails1 = userDetailsService.loadUserByUsernameAndPassword(loginRequest.getUsername(),this.encoder.encode(loginRequest.getPassword()) );
-        
-        String jwt = jwtTokenUtil.generateToken(userDetails1);
-
-        List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+            
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getUsername());
+            List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-
-        return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-                userDetails.getUsername(), userDetails.getEmail(), roles));
+            
+            User user = userRepository.findByUsername(userDetails.getUsername());
+            
+            return ResponseEntity.ok(new JwtResponse(token, refreshToken.getToken(), user.getId(),
+                user.getUsername(), user.getEmail(), roles));
     }
+
+//    @PostMapping("/signin")
+//    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+//
+////        Authentication authentication = authenticationManager
+////                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+//
+//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+//        
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//        
+//        final UserDetails userDetails1 = userDetailsService.loadUserByUsernameAndPassword(loginRequest.getUsername(),this.encoder.encode(loginRequest.getPassword()) );
+//        
+//        String jwt = jwtTokenUtil.generateToken(userDetails1);
+//
+//        List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+//                .collect(Collectors.toList());
+//
+//        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+//
+//        return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
+//                userDetails.getUsername(), userDetails.getEmail(), roles));
+//    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -180,5 +199,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(new MessageResponse("Log out successful!"));
     }
     
-
+    private void authenticate(String username, String password) throws Exception {
+        try {
+                System.out.println("This is the username and password yanick "+username+ "  "+ password);
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+                throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+                throw new Exception("INVALID_CREDENTIALS", e);
+        }
+    }
 }

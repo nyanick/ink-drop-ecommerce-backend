@@ -43,6 +43,16 @@ public class RefreshTokenService {
         refreshToken = refreshTokenRepository.save(refreshToken);
         return refreshToken;
     }
+    
+    public RefreshToken createRefreshToken(String username) {
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(userRepository.findByUsername(username));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+        refreshToken.setToken(UUID.randomUUID().toString());
+        refreshToken = refreshTokenRepository.save(refreshToken);
+        return refreshToken;
+    }
+    
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
           refreshTokenRepository.delete(token);

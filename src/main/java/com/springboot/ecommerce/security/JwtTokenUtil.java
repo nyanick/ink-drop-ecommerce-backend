@@ -16,8 +16,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Encoders;
-import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,16 +30,12 @@ public class JwtTokenUtil implements Serializable {
         private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
         
         @Value("${app.jwtTokenValidity}")
-	private long JWT_TOKEN_VALIDITY;//5hours
+	private long JWT_TOKEN_VALIDITY = 60*60*5;//5hours
 
 	@Value("${jwt.secret}")
-	private String secret;
+	private String secret="yanick2022";
         
         
-        
-        
-        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        String base64Key = Encoders.BASE64.encode(key.getEncoded());
 
 	public String getUsernameFromToken(String token) {
 		return getClaimFromToken(token, Claims::getSubject);
@@ -61,8 +55,8 @@ public class JwtTokenUtil implements Serializable {
 	}
 
 	private Claims getAllClaimsFromToken(String token) {
-                return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-		//return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+                //return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
 	private Boolean isTokenExpired(String token) {
@@ -83,8 +77,9 @@ public class JwtTokenUtil implements Serializable {
 	private String doGenerateToken(Map<String, Object> claims, String subject) {
 
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY)).signWith(key).compact().replace("_","/" ).replace( "-","+");
+				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret).compact();
 	}
+
 
 	public Boolean canTokenBeRefreshed(String token) {
 		return (!isTokenExpired(token) || ignoreTokenExpiration(token));
@@ -97,7 +92,8 @@ public class JwtTokenUtil implements Serializable {
         
      public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(authToken);
+            //Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
             return true;
         } catch (SecurityException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());

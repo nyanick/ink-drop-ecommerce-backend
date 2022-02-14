@@ -38,10 +38,7 @@ public class SignupRequest {
     @Size(min = 3, max = 20)
     private String lastname;
     
-    @NotBlank
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Africa/Douala")
-    @Temporal(TemporalType.DATE)
-    private Date dob;
+    private String dob;
     
     private Set<String> role;
     
@@ -113,11 +110,11 @@ public class SignupRequest {
         this.lastname = lastname;
     }
 
-    public Date getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
     
