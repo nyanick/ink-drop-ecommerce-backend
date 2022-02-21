@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.springboot.ecommerce.model.ProductCategory;
-import com.springboot.ecommerce.repository.ProductCategoryDao;
+import com.springboot.ecommerce.repository.ProductCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,31 +14,32 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Autowired
-    ProductCategoryDao productCategoryDao;
+    ProductCategoryRepository productCategoryRepo;
 
     @Override
-    public int createProductCategory(ProductCategory productCategory) {
-        return productCategoryDao.addCategory(productCategory);
+    public ProductCategory createProductCategory(ProductCategory productCategory) {
+        return productCategoryRepo.save(productCategory);
     }
 
     @Override
     public ProductCategory editProductCategory(ProductCategory productCategory) {
-        productCategoryDao.updateCategory(productCategory);
+        productCategoryRepo.save(productCategory);
         return productCategory;
     }
 
     @Override
     public void removeCategoryById(int id) {
-        productCategoryDao.deleteCategory(id);
+        productCategoryRepo.deleteById(new Double(id).longValue());
     }
 
     @Override
     public List<ProductCategory> getCategoryList() {
-        return productCategoryDao.getCategories().stream().distinct().collect(Collectors.toList());
+        return productCategoryRepo.findAll();
     }
 
     @Override
     public ProductCategory findCategoryById(int id) {
-        return productCategoryDao.findCategoryById(id);
+        return productCategoryRepo.findById(new Double(id).longValue()).get();
     }
+    
 }

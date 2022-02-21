@@ -4,7 +4,7 @@ import com.springboot.ecommerce.model.ProductSubCategory;
 import java.util.List;
 
 public interface ProductSubCategoryService {
-    public int createSubCategory(ProductSubCategory subCategory);
+    public ProductSubCategory createSubCategory(ProductSubCategory subCategory);
     public ProductSubCategory editSubCategory(ProductSubCategory subCategory);
     public void removeSubCategoryById(int id);
     public List<ProductSubCategory> getSubCategoryList();

@@ -17,18 +17,10 @@ public class ProductSubCategory {
     private int psc_id;
 
     @Column
-    private String subCategoryName;
-
-    @OneToMany(fetch = FetchType.EAGER)     //one subcategory can have multiple subcategory features
-    @JsonBackReference
-    @JsonIgnore
-    @JoinColumn(name = "psc_id")
-    private Set<SubCategoryFeature> subCategoryFeatures = new HashSet<>();
-
-    @ManyToOne(fetch = FetchType.EAGER)     //multiple subcategories can have one category
-    @JsonBackReference
-    @JoinColumn(name = "pc_id")
-    private ProductCategory productCategory;
+    private String name_en;
+    
+    @Column
+    private String name_fr;
 
     public int getPsc_id() {
         return psc_id;
@@ -38,27 +30,21 @@ public class ProductSubCategory {
         this.psc_id = psc_id;
     }
 
-    public String getSubCategoryName() {
-        return subCategoryName;
+    public String getName_en() {
+        return name_en;
     }
 
-    public void setSubCategoryName(String subCategoryName) {
-        this.subCategoryName = subCategoryName;
+    public void setName_en(String name_en) {
+        this.name_en = name_en;
     }
 
-    public Set<SubCategoryFeature> getSubCategoryFeatures() {
-        return subCategoryFeatures;
+    public String getName_fr() {
+        return name_fr;
     }
 
-    public void setSubCategoryFeatures(Set<SubCategoryFeature> subCategoryFeatures) {
-        this.subCategoryFeatures = subCategoryFeatures;
+    public void setName_fr(String name_fr) {
+        this.name_fr = name_fr;
     }
-
-    public ProductCategory getProductCategory() {
-        return productCategory;
-    }
-
-    public void setProductCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
-    }
+    
+    
 }

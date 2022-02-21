@@ -2,7 +2,7 @@ package com.springboot.ecommerce.service;
 
 
 import com.springboot.ecommerce.model.ProductSubCategory;
-import com.springboot.ecommerce.repository.ProductSubCategoryDao;
+import com.springboot.ecommerce.repository.ProductSubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,31 +15,30 @@ import java.util.stream.Collectors;
 public class ProductSubCategoryServiceImpl implements ProductSubCategoryService{
 
     @Autowired
-    ProductSubCategoryDao subCategoryDao;
+    ProductSubCategoryRepository subCategoryRepo;
 
     @Override
-    public int createSubCategory(ProductSubCategory subCategory) {
-        return subCategoryDao.addSubCategory(subCategory);
+    public ProductSubCategory createSubCategory(ProductSubCategory subCategory) {
+        return subCategoryRepo.save(subCategory);
     }
 
     @Override
     public ProductSubCategory editSubCategory(ProductSubCategory subCategory) {
-        subCategoryDao.updateSubCategory(subCategory);
-        return subCategory;
+        return subCategoryRepo.save(subCategory);
     }
 
     @Override
     public void removeSubCategoryById(int id) {
-        subCategoryDao.deleteSubCategory(id);
+        subCategoryRepo.deleteById(new Double(id).longValue());
     }
 
     @Override
     public List<ProductSubCategory> getSubCategoryList() {
-        return subCategoryDao.getSubCategories().stream().distinct().collect(Collectors.toList());
+        return subCategoryRepo.findAll();
     }
 
     @Override
     public ProductSubCategory findSubCategoryById(int id) {
-        return subCategoryDao.findSubCategoryById(id);
+        return subCategoryRepo.findById(new Double(id).longValue()).get();
     }
 }

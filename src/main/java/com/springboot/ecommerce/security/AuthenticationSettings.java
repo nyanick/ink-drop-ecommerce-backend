@@ -83,8 +83,8 @@ public class AuthenticationSettings extends WebSecurityConfigurerAdapter {
                             .authorizeRequests().antMatchers("/authenticate","/auth/**","/signup","/swagger-ui*", "/api-docs", "/api-docs/*","/swagger-ui/*").permitAll().
 
                             // all other requests need to be authenticated
-                            anyRequest().authenticated().and().
-                            //anyRequest().permitAll().and().
+                            //anyRequest().authenticated().and().
+                            anyRequest().permitAll().and().
 
                             // make sure we use stateless session; session won't be used to
                             // store user's state.
