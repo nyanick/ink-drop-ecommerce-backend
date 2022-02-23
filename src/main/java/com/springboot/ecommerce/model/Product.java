@@ -27,13 +27,11 @@ public class Product {
     private String shortdescription;
 
     @Column(name = "fdesp")
-    private int longdescription;
+    private String longdescription;
+   
+    private String category_id;//would store the Id of categories
     
-    @Convert(converter = StringListConverter.class)
-    private HashSet<String> category = new HashSet();//would store the Id of sub categories
-    
-    @Convert(converter = StringListConverter.class)
-    private HashSet<String> subcategory = new HashSet();//would store the Id of sub categories
+    private String subcategory_id ;//would store the Id of sub categories
 
     @Column(name="qty")
     private int quantiry;
@@ -83,6 +81,10 @@ public class Product {
     @Temporal(TemporalType.DATE)
     private Date modifiedDate;
     
+    //code of the lang
+    
+    private String lang;
+    
     private String cuser;
     
     private String muser;
@@ -126,31 +128,30 @@ public class Product {
         this.shortdescription = shortdescription;
     }
 
-    public int getLongdescription() {
+    public String getLongdescription() {
         return longdescription;
     }
 
-    public void setLongdescription(int longdescription) {
+    public void setLongdescription(String longdescription) {
         this.longdescription = longdescription;
     }
 
-    public HashSet<String> getCategory() {
-        return category;
+    public String getCategory_id() {
+        return category_id;
     }
 
-    public void setCategory(HashSet<String> category) {
-        this.category = category;
+    public void setCategory_id(String category_id) {
+        this.category_id = category_id;
     }
 
-    public HashSet<String> getSubcategory() {
-        return subcategory;
+    public String getSubcategory_id() {
+        return subcategory_id;
     }
 
-    public void setSubcategory(HashSet<String> subcategory) {
-        this.subcategory = subcategory;
+    public void setSubcategory_id(String subcategory_id) {
+        this.subcategory_id = subcategory_id;
     }
 
-    
 
     public int getQuantiry() {
         return quantiry;
@@ -305,6 +306,14 @@ public class Product {
 
     public void setDele(String dele) {
         this.dele = dele;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
     
     

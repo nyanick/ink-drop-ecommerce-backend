@@ -39,19 +39,20 @@ public class CloudinaryService {
      * @return the publicId assigned to the uploaded file, or null in case of
      * error
      */
-    public String upload(MultipartFile file) {
+    public Map upload(MultipartFile file) {
         logger.trace("Called CloudinaryService.upload with args: the multipart file");
         try {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
             String publicId = uploadResult.get("public_id").toString();
             logger.info("successfully uploaded the file: " + publicId);
-            return publicId;
+            return uploadResult;
         } catch (Exception ex) {
             logger.error("failed to load to Cloudinary the image file: " + file.getName());
             logger.error(ex.getMessage());
             return null;
         }
     }
+    
 
  
 

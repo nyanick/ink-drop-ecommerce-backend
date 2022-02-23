@@ -25,8 +25,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "SELECT * FROM product e WHERE e.dele = ?1",nativeQuery=true)
     public List<Product> getProductsInTheSameSubCategory(Long psc_id, Integer minCost, Integer maxCost, String dele);
 
-    @Query(value = "SELECT * FROM product e WHERE e.dele = ?1",nativeQuery=true)
-    public List<Product> findAllProducts(String dele);
+    @Query(value = "SELECT * FROM product e WHERE e.dele = ?2",nativeQuery=true)
+    public List<Product> findAllProducts(String lang, String dele);
     
     @Query(value = "SELECT * FROM product e WHERE e.id=?1 and e.dele = ?2",nativeQuery=true)
     public Product findProductById(Long id, String dele);

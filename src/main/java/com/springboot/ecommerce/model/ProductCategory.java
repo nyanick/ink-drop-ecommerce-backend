@@ -8,62 +8,42 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "ProductCategory")
+@Table(name = "categories")
 public class ProductCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pc_id;
+    private int id;
     @Column
-    private String name_fr;
+    private String name;
     
     @Column
-    private String name_en;
+    private String lang;
     
-    @Convert(converter = StringListConverter.class)
-    private Set<String> subcategories = new HashSet<>();
 
-
-    public int getPc_id() {
-        return pc_id;//3
+    public int getId() {
+        return id;//3
     }
 
-    public void setPc_id(int pc_id) {
-        this.pc_id = pc_id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getName_fr() {
-        return name_fr;
+    public String getName() {
+        return name;
     }
 
-    public void setName_fr(String name_fr) {
-        this.name_fr = name_fr;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getName_en() {
-        return name_en;
+    public String getLang() {
+        return lang;
     }
 
-    public void setName_en(String name_en) {
-        this.name_en = name_en;
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
-    public Set<String> getSubcategories() {
-        return subcategories;
-    }
-
-    public void setSubcategories(Set<String> subcategories) {
-        this.subcategories = subcategories;
-    }
-
-    
-    
-    public Set<String> getSubCategories() {
-        return subcategories;
-    }
-
-    public void setSubCategories(Set<String> subcategories) {
-        this.subcategories = subcategories;
-    }
 
 }

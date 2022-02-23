@@ -33,8 +33,8 @@ public class ProductSubCategoryServiceImpl implements ProductSubCategoryService{
     }
 
     @Override
-    public List<ProductSubCategory> getSubCategoryList() {
-        return subCategoryRepo.findAll();
+    public List<ProductSubCategory> getSubCategoryList(String lang) {
+        return subCategoryRepo.findAllByLang(lang);
     }
 
     @Override

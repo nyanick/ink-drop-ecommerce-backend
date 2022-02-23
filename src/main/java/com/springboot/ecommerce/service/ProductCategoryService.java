@@ -8,6 +8,6 @@ public interface ProductCategoryService {
     public ProductCategory createProductCategory(ProductCategory productCategory);
     public ProductCategory editProductCategory(ProductCategory productCategory);
     public void removeCategoryById(int id);
-    public List<ProductCategory> getCategoryList();
+    public List<ProductCategory> getCategoryList(String lang);
     public ProductCategory findCategoryById(int id);
 }

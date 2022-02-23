@@ -27,61 +27,21 @@ public class ProductSubCategoryController {
     @Autowired
     ProductSubCategoryService subCategoryService;
 
-    @Operation(summary = "Creates new product subcategory", description = "Creates new product subcategory",tags = { "Product SubCategory API" })
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Product SubCategory created",content = @Content(schema = @Schema(example = " ")))})
+    
     @PostMapping(value = "/subcategory", headers = "Accept=application/json")
-    public ResponseEntity<Void> createNewSubCategory(@Parameter(description="Creates new product subcategory here",
-                                                                required=true,
-                                                                schema=@Schema(example = "{\n" +
-                                                                        "    \"subCategoryName\": \"string\",\n" +
-                                                                        "    \"productCategory\": {\n" +
-                                                                        "        \"pc_id\": category_id_that_subcategory_is_related_to\n" +
-                                                                        "    }\n" +
-                                                                        "}")
-                                                    )@RequestBody ProductSubCategory subCategory, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Void> createNewSubCategory(@RequestBody ProductSubCategory subCategory, UriComponentsBuilder ucBuilder) {
         subCategoryService.createSubCategory(subCategory);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/subcategory/{id}").buildAndExpand(subCategory.getPsc_id()).toUri());
+        headers.setLocation(ucBuilder.path("/subcategory/{id}").buildAndExpand(subCategory.getId()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
-
-    @Operation(summary = "Updates the product subcategory which is specified by id", tags = { "Product SubCategory API" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(example = "{\n" +
-                    "    \"psc_id\": product_subcategory_id,\n" +
-                    "    \"subCategoryName\": \"string\",\n" +
-                    "    \"subCategoryFeatures\": [\n" +
-                    "        {\n" +
-                    "            \"scf_id\": subcategory_feature_id,\n" +
-                    "            \"subCategoryFeatureName\": null,\n" +
-                    "            \"productFeatureDetails\": []\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}"))),
-            @ApiResponse(responseCode = "500", description = "No elements with ID that you have specified",content = @Content(schema = @Schema(example = " ")))})
+    
     @PutMapping(value="/subcategory/", headers="Accept=application/json")
-    public ProductSubCategory updateSubCategory(@Parameter(description="Updates the product feature detail specified by ID", required=true,schema=@Schema(example = "{\n" +
-                                                                "        \"psc_id\": product_subcategory_id,\n" +
-                                                                "        \"subCategoryName\": \"string\",\n" +
-                                                                "        \"productCategory\": {\n" +
-                                                                "        \t\"pc_id\": product_category_id\n" +
-                                                                "    \t},\n" +
-                                                                "        \"subCategoryFeatures\": [\n" +
-                                                                "            {\n" +
-                                                                "                \"scf_id\": subcategory_feature_id_1\n" +
-                                                                "            },\n" +
-                                                                "            {\n" +
-                                                                "                \"scf_id\": subcategory_feature_id_2\n" +
-                                                                "            }\n" +
-                                                                "        ]\n" +
-                                                                "    }")
-                                                          )@RequestBody ProductSubCategory subCategory)
+    public ProductSubCategory updateSubCategory(@RequestBody ProductSubCategory subCategory)
     {
         return  subCategoryService.editSubCategory(subCategory);
     }
 
-    @Operation(summary = "Deletes the product subcategory which is specified by id", description = "Deletes product subcategory", tags = { "Product SubCategory API" })
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "successful operation",content = @Content(schema = @Schema(example = " ")))})
     @DeleteMapping(value="/subcategory/{id}", headers ="Accept=application/json")
     public ResponseEntity<ProductSubCategory> deleteSubCategory(@Parameter(description = "ID of the product subcategory") @PathVariable("id") int id){
         ProductSubCategory subCategory = subCategoryService.findSubCategoryById(id);
@@ -92,34 +52,6 @@ public class ProductSubCategoryController {
         return new ResponseEntity<ProductSubCategory>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Find product subcategory by ID", description = "Returns a single product subcategory", tags = { "Product SubCategory API" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(example = "{\n" +
-                    "    \"psc_id\": product_subcategory_id,\n" +
-                    "    \"subCategoryName\": \"string\",\n" +
-                    "    \"subCategoryFeatures\": [\n" +
-                    "        {\n" +
-                    "            \"scf_id\": subcategory_feature_id,\n" +
-                    "            \"subCategoryFeatureName\": \"string\",\n" +
-                    "            \"productFeatureDetails\": [\n" +
-                    "                {\n" +
-                    "                    \"pfd_id\": product_feature_detail_id,\n" +
-                    "                    \"productFeatureDetail\": \"string\"\n" +
-                    "                }\n" +
-                    "            ]\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"scf_id\": subcategory_feature_id,\n" +
-                    "            \"subCategoryFeatureName\": \"string\",\n" +
-                    "            \"productFeatureDetails\": [\n" +
-                    "                {\n" +
-                    "                    \"pfd_id\": product_feature_detail_id,\n" +
-                    "                    \"productFeatureDetail\": \"string\"\n" +
-                    "                }\n" +
-                    "            ]\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}")))})
     @GetMapping(value = "/subcategory/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductSubCategory> getSubCategoryById(@Parameter(description = "ID of the product subcategory") @PathVariable("id") int id) {
 
@@ -131,65 +63,8 @@ public class ProductSubCategoryController {
         return new ResponseEntity<ProductSubCategory>(subCategory, HttpStatus.OK);
     }
 
-    @Operation(summary = "Find product subcategories as a list", description = "Lists all product subcategories", tags = { "Product SubCategory API" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation",
-                    content = @Content(schema = @Schema(example = "[\n" +
-                            "{\n" +
-                            "    \"psc_id\": product_subcategory_id_1,\n" +
-                            "    \"subCategoryName\": \"string\",\n" +
-                            "    \"subCategoryFeatures\": [\n" +
-                            "        {\n" +
-                            "            \"scf_id\": subcategory_feature_id,\n" +
-                            "            \"subCategoryFeatureName\": \"string\",\n" +
-                            "            \"productFeatureDetails\": [\n" +
-                            "                {\n" +
-                            "                    \"pfd_id\": product_feature_detail_id,\n" +
-                            "                    \"productFeatureDetail\": \"string\"\n" +
-                            "                }\n" +
-                            "            ]\n" +
-                            "        },\n" +
-                            "        {\n" +
-                            "            \"scf_id\": subcategory_feature_id,\n" +
-                            "            \"subCategoryFeatureName\": \"string\",\n" +
-                            "            \"productFeatureDetails\": [\n" +
-                            "                {\n" +
-                            "                    \"pfd_id\": product_feature_detail_id,\n" +
-                            "                    \"productFeatureDetail\": \"string\"\n" +
-                            "                }\n" +
-                            "            ]\n" +
-                            "        }\n" +
-                            "    ]\n" +
-                            "},\n" +
-                            "{\n" +
-                            "    \"psc_id\": product_subcategory_id_2,\n" +
-                            "    \"subCategoryName\": \"string\",\n" +
-                            "    \"subCategoryFeatures\": [\n" +
-                            "        {\n" +
-                            "            \"scf_id\": subcategory_feature_id,\n" +
-                            "            \"subCategoryFeatureName\": \"string\",\n" +
-                            "            \"productFeatureDetails\": [\n" +
-                            "                {\n" +
-                            "                    \"pfd_id\": product_feature_detail_id,\n" +
-                            "                    \"productFeatureDetail\": \"string\"\n" +
-                            "                }\n" +
-                            "            ]\n" +
-                            "        },\n" +
-                            "        {\n" +
-                            "            \"scf_id\": subcategory_feature_id,\n" +
-                            "            \"subCategoryFeatureName\": \"string\",\n" +
-                            "            \"productFeatureDetails\": [\n" +
-                            "                {\n" +
-                            "                    \"pfd_id\": product_feature_detail_id,\n" +
-                            "                    \"productFeatureDetail\": \"string\"\n" +
-                            "                }\n" +
-                            "            ]\n" +
-                            "        }\n" +
-                            "    ]\n" +
-                            "}\n" +
-                            "]"))) })
-    @GetMapping(value="/subcategories", headers="Accept=application/json")
-    public List<ProductSubCategory> getAllSubCategories() {
-        return subCategoryService.getSubCategoryList();
+    @GetMapping(value="/subcategories/{lang}", headers="Accept=application/json")
+    public List<ProductSubCategory> getAllSubCategories(@PathVariable String lang) {
+        return subCategoryService.getSubCategoryList(lang);
     }
 }

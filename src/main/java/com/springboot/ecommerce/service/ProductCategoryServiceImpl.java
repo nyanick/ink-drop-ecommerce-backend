@@ -33,8 +33,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public List<ProductCategory> getCategoryList() {
-        return productCategoryRepo.findAll();
+    public List<ProductCategory> getCategoryList(String lang) {
+        return productCategoryRepo.findAllByLang(lang);
     }
 
     @Override

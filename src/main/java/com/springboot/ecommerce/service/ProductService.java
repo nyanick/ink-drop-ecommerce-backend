@@ -16,5 +16,5 @@ public interface ProductService {
     public List<Product> getProductListInTheSameSubCategory(Long psc_id, Integer minCost, Integer maxCost,String dele);
     public List<Product> getAllProductsUnderTheSameCategory(Long pc_id, String dele);
     public void saveProduct(Product product);
-    public List<Product> getAllProduct(String dele);
+    public List<Product> getAllProduct(String lang,String dele);
 }

@@ -39,80 +39,19 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @Operation(summary = "Creates new product", description = "Creates new product",tags = { "Product" })
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Product created",content = @Content(schema = @Schema(example = " ")))})
     @PostMapping(value = "/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-        public ResponseEntity<Void> createNewProduct(@RequestParam List<ProductOptions> poption, @RequestParam List<String> category,@RequestParam List<String> subcategory,@RequestParam MultiValueMap<String, Object> data,@RequestParam MultipartFile coverimage,@RequestParam List<MultipartFile> media,  UriComponentsBuilder ucBuilder){
+    public ResponseEntity<Void> createNewProduct(@RequestParam List<ProductOptions> poption, @RequestParam List<String> category,@RequestParam List<String> subcategory,@RequestParam MultiValueMap<String, Object> data,@RequestParam MultipartFile coverimage,@RequestParam List<MultipartFile> media,  UriComponentsBuilder ucBuilder){
         Product product = productService.createProduct(poption,category,subcategory,data,coverimage,media);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/product/{id}").buildAndExpand(product.getId()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Updates the product which is specified by id", tags = { "Product" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Updated Product Category", content = @Content(schema = @Schema(example = "{\n" +
-                    "    \"id\": product_id,\n" +
-                    "    \"name\": \"string\",\n" +
-                    "    \"shortdescription\": \"string\",\n" +
-                    "    \"longdescription\": \"string\",\n" +
-                    "    \"price\": float,\n" +
-                    "    \"quantiry\": int,\n" +
-                    "    \"createdDate\": string,\n" +
-                    "    \"modifiedDate\": string,\n" +
-                    "    \"category\": [\n id_1, id_2" +
-                    "    ],\n" +
-                    "    \"subcategory\": [\n id_1, id_2" +
-                    "    ],\n" +
-                    "    \"coverImage\": {\n" +
-                    "        \"id\": cover_image_id_of_the_product,\n" +
-                    "        \"url\": \"string\"\n" +
-                    "        \"size\": \"string\"\n" +
-                    "        \"type\": \"string\"\n" +
-                    "    },\n" +
-                    "    \"customprices\": string,\n" +
-                    "    \"unitAreaPrice\": string,\n" +
-                    "    \"itemSet\": [\n" +
-                    "        {\n" +
-                    "            \"id\": id_item,\n" +
-                    "            \"width\": int\n" +
-                    "            \"length\": int\n" +
-                    "            \"height\": int\n" +
-                    "            \"price\": Double\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"id\": id_item,\n" +
-                    "            \"width\": int\n" +
-                    "            \"length\": int\n" +
-                    "            \"height\": int\n" +
-                    "            \"price\": Double\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "    \"media\": [\n" +
-                    "        {\n" +
-                        "        \"id\": image_id_of_the_product,\n" +
-                        "        \"url\": \"string\"\n" +
-                        "        \"size\": \"string\"\n" +
-                        "        \"type\": \"string\"\n" +
-                    "        },\n" +
-                    "        {\n" +
-                        "        \"id\": image_id_of_the_product,\n" +
-                        "        \"url\": \"string\"\n" +
-                        "        \"size\": \"string\"\n" +
-                        "        \"type\": \"string\"\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}"))),
-            @ApiResponse(responseCode = "500", description = "No elements with ID that you have specified",content = @Content(schema = @Schema(example = " ")))
-    })
     @PostMapping(value="/updateproduct/")
-    public Product updateProduct(@RequestBody Product product)
-    {
+    public Product updateProduct(@RequestBody Product product) {
         return  productService.editProduct(product);
     }
 
-    @Operation(summary = "Deletes the product which is specified by id", description = "Deletes product", tags = { "Product" })
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Deletes Specified Product", content = @Content(schema = @Schema(example = " "))) })
     @GetMapping(value="/deleproduct/{id}", headers ="Accept=application/json")
     public ResponseEntity<Product> deleteProduct(@Parameter(description = "ID of the product") @PathVariable("id") Long id){
         String dele = "0";
@@ -139,62 +78,6 @@ public class ProductController {
         return new ResponseEntity<Product>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Find product by ID", description = "Returns a single product", tags = { "Product" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(example = "{\n" +
-                    "    \"id\": product_id,\n" +
-                    "    \"name\": \"string\",\n" +
-                    "    \"shortdescription\": \"string\",\n" +
-                    "    \"longdescription\": \"string\",\n" +
-                    "    \"price\": float,\n" +
-                    "    \"quantiry\": int,\n" +
-                    "    \"createdDate\": string,\n" +
-                    "    \"modifiedDate\": string,\n" +
-                    "    \"category\": [\n id_1, id_2" +
-                    "    ],\n" +
-                    "    \"subcategory\": [\n id_1, id_2" +
-                    "    ],\n" +
-                    "    \"coverImage\": {\n" +
-                    "        \"id\": cover_image_id_of_the_product,\n" +
-                    "        \"url\": \"string\"\n" +
-                    "        \"size\": \"string\"\n" +
-                    "        \"type\": \"string\"\n" +
-                    "    },\n" +
-                    "    \"customprices\": string,\n" +
-                    "    \"unitAreaPrice\": string,\n" +
-                    "    \"itemSet\": [\n" +
-                    "        {\n" +
-                    "            \"id\": id_item,\n" +
-                    "            \"width\": int\n" +
-                    "            \"length\": int\n" +
-                    "            \"height\": int\n" +
-                    "            \"price\": Double\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"id\": id_item,\n" +
-                    "            \"width\": int\n" +
-                    "            \"length\": int\n" +
-                    "            \"height\": int\n" +
-                    "            \"price\": Double\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "    \"media\": [\n" +
-                    "        {\n" +
-                        "        \"id\": image_id_of_the_product,\n" +
-                        "        \"url\": \"string\"\n" +
-                        "        \"size\": \"string\"\n" +
-                        "        \"type\": \"string\"\n" +
-                    "        },\n" +
-                    "        {\n" +
-                        "        \"id\": image_id_of_the_product,\n" +
-                        "        \"url\": \"string\"\n" +
-                        "        \"size\": \"string\"\n" +
-                        "        \"type\": \"string\"\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}"))),
-            @ApiResponse(responseCode = "500", description = "No product with this id", content = @Content(schema = @Schema(example = " ")))
-    })
     @GetMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> getProductById(@Parameter(description = "ID of the product") @PathVariable("id") Long id) {
         String dele = "0";
@@ -206,88 +89,15 @@ public class ProductController {
         return new ResponseEntity<Product>(product, HttpStatus.OK);
     }
 
-    @Operation(summary = "Find products as a list", description = "Lists all products", tags = { "Product" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation",
-                    content = @Content(schema = @Schema(example = "{\n" +
-                            "    \"_embedded\": {\n" +
-                            "        \"products\": [\n" +
-                            "    \"id\": product_id,\n" +
-                            "    \"name\": \"string\",\n" +
-                            "    \"shortdescription\": \"string\",\n" +
-                            "    \"longdescription\": \"string\",\n" +
-                            "    \"price\": float,\n" +
-                            "    \"quantiry\": int,\n" +
-                            "    \"createdDate\": string,\n" +
-                            "    \"modifiedDate\": string,\n" +
-                            "    \"category\": [\n id_1, id_2" +
-                            "    ],\n" +
-                            "    \"subcategory\": [\n id_1, id_2" +
-                            "    ],\n" +
-                            "    \"coverImage\": {\n" +
-                            "        \"id\": cover_image_id_of_the_product,\n" +
-                            "        \"url\": \"string\"\n" +
-                            "        \"size\": \"string\"\n" +
-                            "        \"type\": \"string\"\n" +
-                            "    },\n" +
-                            "    \"customprices\": string,\n" +
-                            "    \"unitAreaPrice\": string,\n" +
-                            "    \"itemSet\": [\n" +
-                            "        {\n" +
-                            "            \"id\": id_item,\n" +
-                            "            \"width\": int\n" +
-                            "            \"length\": int\n" +
-                            "            \"height\": int\n" +
-                            "            \"price\": Double\n" +
-                            "        },\n" +
-                            "        {\n" +
-                            "            \"id\": id_item,\n" +
-                            "            \"width\": int\n" +
-                            "            \"length\": int\n" +
-                            "            \"height\": int\n" +
-                            "            \"price\": Double\n" +
-                            "        }\n" +
-                            "    ]\n" +
-                            "    \"media\": [\n" +
-                            "        {\n" +
-                                "        \"id\": image_id_of_the_product,\n" +
-                                "        \"url\": \"string\"\n" +
-                                "        \"size\": \"string\"\n" +
-                                "        \"type\": \"string\"\n" +
-                            "        },\n" +
-                            "        {\n" +
-                                "        \"id\": image_id_of_the_product,\n" +
-                                "        \"url\": \"string\"\n" +
-                                "        \"size\": \"string\"\n" +
-                                "        \"type\": \"string\"\n" +
-                            "        }\n" +
-                            "    ]\n" +
-                            "                \"_links\": {\n" +
-                            "                    \"products\": {\n" +
-                            "                        \"href\": \"http://localhost:8080/product/product/{id}\"\n" +
-                            "                    }\n" +
-                            "                }\n" +
-                            "            },\n"+
-                            "        ]\n" +
-                            "    },\n" +
-                            "    \"_links\": {\n" +
-                            "        \"self\": {\n" +
-                            "            \"href\": \"http://localhost:8080/product/products\"\n" +
-                            "        }\n" +
-                            "    }\n" +
-                            "}")
-                    )
-            )
-    })
-    @GetMapping(value="/Allproducts", headers="Accept=application/json")
-    public ResponseEntity<CollectionModel<Product>> getAllProducts() {
+    @GetMapping(value="/Allproducts/{lang}", headers="Accept=application/json")
+    public ResponseEntity<CollectionModel<Product>> getAllProducts(@PathVariable String lang) {
 
         String dele = "0";
-        List<Product> products = productService.getAllProduct(dele);
+        List<Product> products = productService.getAllProduct(lang,dele);
 
         return ResponseEntity.ok(
                 new CollectionModel<>(products,
-                        linkTo(methodOn(ProductServiceImpl.class).getAllProduct(dele)).slash("product").slash("products").withSelfRel()));
+                        linkTo(methodOn(ProductServiceImpl.class).getAllProduct(lang,dele)).slash("product").slash("products").withSelfRel()));
     }
 
 }

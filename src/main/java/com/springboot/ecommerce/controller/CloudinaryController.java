@@ -6,6 +6,7 @@
 package com.springboot.ecommerce.controller;
 
 import com.springboot.ecommerce.service.CloudinaryService;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class CloudinaryController {
      */
     @PostMapping("/upload")
     public @ResponseBody
-    String upload( @RequestParam("file") MultipartFile file) {
+    Map upload( @RequestParam("file") MultipartFile file) {
         return cloudinaryService.upload( file);
     }
     

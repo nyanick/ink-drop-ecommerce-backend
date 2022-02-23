@@ -3,47 +3,59 @@ package com.springboot.ecommerce.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.springboot.ecommerce.util.StringListConverter;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "ProductSubCategory")
+@Table(name = "subcategories")
 public class ProductSubCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int psc_id;
+    private int id;
 
     @Column
-    private String name_en;
+    private String name;
     
     @Column
-    private String name_fr;
+    private String lang;
+    
+    //category id, every subcategory belongs to a category
+    private String c_id;
 
-    public int getPsc_id() {
-        return psc_id;
+    public int getId() {
+        return id;
     }
 
-    public void setPsc_id(int psc_id) {
-        this.psc_id = psc_id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getName_en() {
-        return name_en;
+    public String getName() {
+        return name;
     }
 
-    public void setName_en(String name_en) {
-        this.name_en = name_en;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getName_fr() {
-        return name_fr;
+    public String getLang() {
+        return lang;
     }
 
-    public void setName_fr(String name_fr) {
-        this.name_fr = name_fr;
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public String getC_id() {
+        return c_id;
+    }
+
+    public void setC_id(String c_id) {
+        this.c_id = c_id;
     }
     
     
